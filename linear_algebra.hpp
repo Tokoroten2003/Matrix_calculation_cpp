@@ -22,7 +22,7 @@ namespace l_alg {
         const Matrix transpose(const Matrix &m) const;
         const T determinant(const Matrix &m) const;
 
-        void print() {
+        void print() const {
             for(int i=0; i<rsize; i++) {
                 std::cout << data.at(i).at(0);
                 for(int j=1; j<csize; j++) {
@@ -34,6 +34,15 @@ namespace l_alg {
         }
         Matrix(int m, int n) : data(m, std::vector<T>(n, 0)) {}
         Matrix(Mat v) : data(v) {}
+
+        static Matrix makeUnit(int size) {
+            Mat data(size, std::vector<T>(size, 0));
+            for(int i=0; i<size; i++) {
+                data.at(i).at(i) = 1;
+            }
+            Matrix<T> m(data);
+            return m;
+        }
     };
     template<typename T> 
     bool Matrix<T>::operator==(const Matrix &m) const {
@@ -68,7 +77,7 @@ namespace l_alg {
     }
     template<typename T> 
     const Matrix<T> operator+(const Matrix<T> &m1, const Matrix<T> &m2) {
-        Matrix m3(m1.rsize, m1.csize);
+        Matrix<T> m3(m1.rsize, m1.csize);
         if(m1.rsize == m2.rsize && m1.csize == m2.csize) {
             for(int i=0; i<m1.rsize; i++) {
                 for(int j=0; j<m1.csize; j++) {

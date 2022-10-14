@@ -4,6 +4,7 @@
 using namespace l_alg;
 
 int main() {
-    Matrix<int> a(2, 2);
-    a.print();
+    Matrix<int> a({{0, 0}, {0, 0}});
+    Matrix<int> e = Matrix<int>::makeUnit(2);
+    (a + e).print();
 }
