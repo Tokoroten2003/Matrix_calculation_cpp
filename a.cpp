@@ -27,4 +27,6 @@ int main() {
     std::cout << "echelon form of a =" << std::endl;
     a.echelon().print();
     std::cout << "rank of a =" << std::endl << a.rank() << std::endl;
+    std::cout << "inverse a =" << std::endl;
+    a.inverse().print();
 }

@@ -24,6 +24,7 @@ namespace m_calc {
 
             const Matrix transpose() const;
             const Matrix echelon() const;
+            const Matrix inverse() const;
             const int rank() const;
             const T determinant() const;
             void print() const;
@@ -160,6 +161,46 @@ namespace m_calc {
                 }
             }
             else {}
+        }
+        return m_result;
+    }
+    template<typename T>
+    const Matrix<T> Matrix<T>::inverse() const {
+        Matrix<T> m_result = identity(rsize);
+        Matrix<T> m_echelon = *this;
+        if(is_square) {
+            bool skip = false;
+            for(int i=0; i<rsize; i++) {
+                if(m_echelon.data.at(i).at(i) == 0) {
+                    for(int k=i; k<rsize; k++) {
+                        if(m_echelon.data.at(k).at(i) != 0) {
+                            m_result = elementary_switch(rsize, k, i) * m_result;
+                            m_echelon = elementary_switch(rsize, k, i) * m_echelon;
+                            break;
+                        }
+                        else if(k == rsize - 1) {
+                            skip = true;
+                        }
+                    }
+                }
+                if(!skip) {
+                    T s = 1 / m_echelon.data.at(i).at(i);
+                    m_result = elementary(rsize, i, s) * m_result;
+                    m_echelon = elementary(rsize, i, s) * m_echelon;
+                    for(int k=0; k<rsize; k++) {
+                        if(k != i) {
+                            T c = (-1) * (m_echelon.data.at(k).at(i) / m_echelon.data.at(i).at(i));
+                            m_result = elementary(rsize, k, i, c) * m_result;
+                            m_echelon = elementary(rsize, k, i, c) * m_echelon;
+                        }
+                        else {}
+                    }
+                }
+                else {}
+            }
+        }
+        else {
+            std::cout << "This is not a square matrix!" << std::endl;
         }
         return m_result;
     }
