@@ -1,7 +1,7 @@
 #include<iostream>
 #include<vector>
-#include"linear_algebra.hpp"
-using namespace l_alg;
+#include"matrix.hpp"
+using namespace m_calc;
 
 int main() {
     Matrix<int> a({{1, 2}, {3, 4}});

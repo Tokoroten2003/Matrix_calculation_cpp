@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 
-namespace l_alg {
+namespace m_calc {
     template<typename T>
     class Matrix {
         public:
