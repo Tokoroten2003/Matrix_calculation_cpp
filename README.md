@@ -1,2 +1,2 @@
 # Matrix calculation in c++
-Experimental matrix implementation in C++
+Experimental matrix-calculation implementation in C++
