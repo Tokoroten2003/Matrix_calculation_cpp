@@ -8,11 +8,14 @@ namespace m_calc {
     class Matrix {
         public:
             using Mat = typename std::vector<std::vector<T>>;
-            Mat data;
-            int rsize = data.size();
-            int csize = data.at(0).size();
-            bool is_square = (rsize == csize);
 
+        private:
+            Mat data;
+            int row_size = data.size();
+            int column_size = data.at(0).size();
+            bool is_square = (row_size == column_size);
+
+        public:
             /*member funcions*/
             bool operator==(const Matrix &m) const;
             inline bool operator!=(const Matrix &m) const;
@@ -35,7 +38,7 @@ namespace m_calc {
 
             /*constrctors*/
             Matrix(int size) : data(size, std::vector<T>(size, 0)) {}
-            Matrix(int rsize, int csize) : data(rsize, std::vector<T>(csize, 0)) {}
+            Matrix(int row_size, int column_size) : data(row_size, std::vector<T>(column_size, 0)) {}
             Matrix(Mat v) : data(v) {}
     };
 
@@ -43,9 +46,9 @@ namespace m_calc {
     template<typename T>
     bool Matrix<T>::operator==(const Matrix &m) const {
             bool equality = true;
-            if(rsize == m.rsize && csize == m.csize) {
-                for(int i=0; i<rsize; i++) {
-                    for(int j=0; j<csize; j++) {
+            if(row_size == m.row_size && column_size == m.column_size) {
+                for(int i=0; i<row_size; i++) {
+                    for(int j=0; j<column_size; j++) {
                         if(data.at(i).at(j) != m.data.at(i).at(j)) {
                             equality = false;
                             break;
@@ -69,9 +72,9 @@ namespace m_calc {
     }
     template<typename T>
     Matrix<T> &Matrix<T>::operator+=(const Matrix &m) {
-        if(rsize == m.rsize && csize == m.csize) {
-            for(int i=0; i<rsize; i++) {
-                for(int j=0; j<csize; j++) {
+        if(row_size == m.row_size && column_size == m.column_size) {
+            for(int i=0; i<row_size; i++) {
+                for(int j=0; j<column_size; j++) {
                     data.at(i).at(j) += m.data.at(i).at(j);
                 }
             }
@@ -83,9 +86,9 @@ namespace m_calc {
     }
     template<typename T>
     Matrix<T> &Matrix<T>::operator-=(const Matrix &m) {
-        if(rsize == m.rsize && csize == m.csize) {
-            for(int i=0; i<rsize; i++) {
-                for(int j=0; j<csize; j++) {
+        if(row_size == m.row_size && column_size == m.column_size) {
+            for(int i=0; i<row_size; i++) {
+                for(int j=0; j<column_size; j++) {
                     data.at(i).at(j) -= m.data.at(i).at(j);
                 }
             }
@@ -97,8 +100,8 @@ namespace m_calc {
     }
     template<typename T>
     Matrix<T> &Matrix<T>::operator*=(const T c) {
-        for(int i=0; i<rsize; i++) {
-            for(int j=0; j<csize; j++) {
+        for(int i=0; i<row_size; i++) {
+            for(int j=0; j<column_size; j++) {
                 data.at(i).at(j) *= c;
             }
         }
@@ -106,11 +109,11 @@ namespace m_calc {
     }
     template<typename T>
     Matrix<T> &Matrix<T>::operator*=(const Matrix &m) {
-        Mat data_result(rsize, std::vector<T>(csize, 0));
-        if(csize == m.rsize) {
-            for (int i=0; i<rsize; i++) {
-                for(int j=0; j<m.csize; j++) {
-                    for(int k=0; k<csize; k++) {
+        Mat data_result(row_size, std::vector<T>(column_size, 0));
+        if(column_size == m.row_size) {
+            for (int i=0; i<row_size; i++) {
+                for(int j=0; j<m.column_size; j++) {
+                    for(int k=0; k<column_size; k++) {
                         data_result.at(i).at(j) += data.at(i).at(k) * m.data.at(k).at(j);
                     }
                 }
@@ -125,9 +128,9 @@ namespace m_calc {
 
     template<typename T>
     const Matrix<T> Matrix<T>::transpose() const {
-        Matrix<T> m_result(csize, rsize);
-        for(int i=0; i<rsize; i++) {
-            for(int j=0; j<csize; j++) {
+        Matrix<T> m_result(column_size, row_size);
+        for(int i=0; i<row_size; i++) {
+            for(int j=0; j<column_size; j++) {
                 m_result.data.at(j).at(i) = data.at(i).at(j);
             }
         }
@@ -137,25 +140,25 @@ namespace m_calc {
     const Matrix<T> Matrix<T>::echelon() const {
         Matrix<T> m_result = *this;
         bool skip = false;
-        for(int i=0; i<rsize; i++) {
+        for(int i=0; i<row_size; i++) {
             if(m_result.data.at(i).at(i) == 0) {
-                for(int k=i; k<rsize; k++) {
+                for(int k=i; k<row_size; k++) {
                     if(m_result.data.at(k).at(i) != 0) {
-                        m_result = elementary_switch(rsize, k, i) * m_result;
+                        m_result = elementary_switch(row_size, k, i) * m_result;
                         break;
                     }
-                    else if(k == rsize - 1) {
+                    else if(k == row_size - 1) {
                         skip = true;
                     }
                 }
             }
             if(!skip) {
                 T s = 1 / m_result.data.at(i).at(i);
-                m_result = elementary(rsize, i, s) * m_result;
-                for(int k=0; k<rsize; k++) {
+                m_result = elementary(row_size, i, s) * m_result;
+                for(int k=0; k<row_size; k++) {
                     if(k != i) {
                         T c = (-1) * (m_result.data.at(k).at(i) / m_result.data.at(i).at(i));
-                        m_result = elementary(rsize, k, i, c) * m_result;
+                        m_result = elementary(row_size, k, i, c) * m_result;
                     }
                     else {}
                 }
@@ -166,32 +169,32 @@ namespace m_calc {
     }
     template<typename T>
     const Matrix<T> Matrix<T>::inverse() const {
-        Matrix<T> m_result = identity(rsize);
+        Matrix<T> m_result = identity(row_size);
         Matrix<T> m_echelon = *this;
         if(is_square) {
             bool skip = false;
-            for(int i=0; i<rsize; i++) {
+            for(int i=0; i<row_size; i++) {
                 if(m_echelon.data.at(i).at(i) == 0) {
-                    for(int k=i; k<rsize; k++) {
+                    for(int k=i; k<row_size; k++) {
                         if(m_echelon.data.at(k).at(i) != 0) {
-                            m_result = elementary_switch(rsize, k, i) * m_result;
-                            m_echelon = elementary_switch(rsize, k, i) * m_echelon;
+                            m_result = elementary_switch(row_size, k, i) * m_result;
+                            m_echelon = elementary_switch(row_size, k, i) * m_echelon;
                             break;
                         }
-                        else if(k == rsize - 1) {
+                        else if(k == row_size - 1) {
                             skip = true;
                         }
                     }
                 }
                 if(!skip) {
                     T s = 1 / m_echelon.data.at(i).at(i);
-                    m_result = elementary(rsize, i, s) * m_result;
-                    m_echelon = elementary(rsize, i, s) * m_echelon;
-                    for(int k=0; k<rsize; k++) {
+                    m_result = elementary(row_size, i, s) * m_result;
+                    m_echelon = elementary(row_size, i, s) * m_echelon;
+                    for(int k=0; k<row_size; k++) {
                         if(k != i) {
                             T c = (-1) * (m_echelon.data.at(k).at(i) / m_echelon.data.at(i).at(i));
-                            m_result = elementary(rsize, k, i, c) * m_result;
-                            m_echelon = elementary(rsize, k, i, c) * m_echelon;
+                            m_result = elementary(row_size, k, i, c) * m_result;
+                            m_echelon = elementary(row_size, k, i, c) * m_echelon;
                         }
                         else {}
                     }
@@ -208,8 +211,8 @@ namespace m_calc {
     const int Matrix<T>::rank() const {
         int rank = 0;
         Mat e = echelon().data;
-        for(int i=0; i<rsize; i++) {
-            for(int j=i; j<csize; j++) {
+        for(int i=0; i<row_size; i++) {
+            for(int j=i; j<column_size; j++) {
                 if(e.at(i).at(j) != 0) {
                     rank++;
                     break;
@@ -223,14 +226,14 @@ namespace m_calc {
         Matrix<T> m_tri = *this;
         T det;
         if(is_square) {
-            for(int i=0; i<rsize; i++) {
-                for(int j=i+1; j<csize; j++) {
+            for(int i=0; i<row_size; i++) {
+                for(int j=i+1; j<column_size; j++) {
                     T c = m_tri.data.at(j).at(i) / m_tri.data.at(i).at(i);
-                    m_tri = elementary(rsize, j, i, (-1 * c)) * m_tri;
+                    m_tri = elementary(row_size, j, i, (-1 * c)) * m_tri;
                 }
             }
             det = m_tri.data.at(0).at(0);
-            for(int i=1; i<rsize; i++) {
+            for(int i=1; i<row_size; i++) {
                 det *= m_tri.data.at(i).at(i);
             }
         }
@@ -241,9 +244,9 @@ namespace m_calc {
     }
     template<typename T>
     void Matrix<T>::print() const {
-        for(int i=0; i<rsize; i++) {
+        for(int i=0; i<row_size; i++) {
             std::cout << data.at(i).at(0);
-            for(int j=1; j<csize; j++) {
+            for(int j=1; j<column_size; j++) {
                 std::cout << " " << data.at(i).at(j);
             }
             std::cout << std::endl;
