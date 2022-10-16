@@ -4,10 +4,10 @@
 using namespace m_calc;
 
 int main() {
-    Matrix<int> a({{1, 2}, {3, 4}});
-    Matrix<int> e = Matrix<int>::makeUnit(2);
-    Matrix<int> b = a + e;
-    int c = 5;
+    Matrix<float> a({{1, 2}, {3, 4}});
+    Matrix<float> e = Matrix<float>::identity(2);
+    Matrix<float> b = a + e;
+    float c = 5;
     std::cout << "a = " << std::endl;
     a.print();
     std::cout << "c = " << std::endl << c << std::endl;
@@ -21,7 +21,10 @@ int main() {
     std::cout << "a * c =" << std::endl;
     (a * c).print();
     std::cout << "transposed a =" << std::endl;
-    (a.transpose()).print();
+    a.transpose().print();
     std::cout << "determinant a =" << std::endl;
     std::cout << a.determinant() << std::endl;
+    std::cout << "echelon form of a =" << std::endl;
+    a.echelon().print();
+    std::cout << "rank of a =" << std::endl << a.rank() << std::endl;
 }

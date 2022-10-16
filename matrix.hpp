@@ -23,9 +23,14 @@ namespace m_calc {
             Matrix &operator*=(const Matrix &m);
 
             const Matrix transpose() const;
+            const Matrix echelon() const;
+            const int rank() const;
             const T determinant() const;
             void print() const;
-            static Matrix makeUnit(int n);
+            static Matrix identity(int size);
+            static Matrix elementary(int size, int i, T c);
+            static Matrix elementary(int size, int i, int j, T c);
+            static Matrix elementary_switch(int size, int i, int j);
 
             /*constrctors*/
             Matrix(int size) : data(size, std::vector<T>(size, 0)) {}
@@ -128,6 +133,51 @@ namespace m_calc {
         return m_result;
     }
     template<typename T>
+    const Matrix<T> Matrix<T>::echelon() const {
+        Matrix<T> m_result = *this;
+        bool skip = false;
+        for(int i=0; i<rsize; i++) {
+            if(m_result.data.at(i).at(i) == 0) {
+                for(int k=i; k<rsize; k++) {
+                    if(m_result.data.at(k).at(i) != 0) {
+                        m_result = elementary_switch(rsize, k, i) * m_result;
+                        break;
+                    }
+                    else if(k == rsize - 1) {
+                        skip = true;
+                    }
+                }
+            }
+            if(!skip) {
+                T s = 1 / m_result.data.at(i).at(i);
+                m_result = elementary(rsize, i, s) * m_result;
+                for(int k=0; k<rsize; k++) {
+                    if(k != i) {
+                        T c = (-1) * (m_result.data.at(k).at(i) / m_result.data.at(i).at(i));
+                        m_result = elementary(rsize, k, i, c) * m_result;
+                    }
+                    else {}
+                }
+            }
+            else {}
+        }
+        return m_result;
+    }
+    template<typename T>
+    const int Matrix<T>::rank() const {
+        int rank = 0;
+        Mat e = echelon().data;
+        for(int i=0; i<rsize; i++) {
+            for(int j=i; j<csize; j++) {
+                if(e.at(i).at(j) != 0) {
+                    rank++;
+                    break;
+                }
+            }
+        }
+        return rank;
+    }
+    template<typename T>
     const T Matrix<T>::determinant() const {
         Matrix<T> m_tri = *this;
         T det;
@@ -135,9 +185,7 @@ namespace m_calc {
             for(int i=0; i<rsize; i++) {
                 for(int j=i+1; j<csize; j++) {
                     T c = m_tri.data.at(j).at(i) / m_tri.data.at(i).at(i);
-                    for(int k=0; k<csize; k++) {
-                        m_tri.data.at(j).at(k) -= c * m_tri.data.at(i).at(k);
-                    }
+                    m_tri = elementary(rsize, j, i, (-1 * c)) * m_tri;
                 }
             }
             det = m_tri.data.at(0).at(0);
@@ -162,13 +210,34 @@ namespace m_calc {
         return;
     }
     template<typename T>
-    Matrix<T> Matrix<T>::makeUnit(int size) {
+    Matrix<T> Matrix<T>::identity(int size) {
         Mat data(size, std::vector<T>(size, 0));
         for(int i=0; i<size; i++) {
             data.at(i).at(i) = 1;
         }
         Matrix<T> m(data);
         return m;
+    }
+    template<typename T>
+    Matrix<T> Matrix<T>::elementary(int size, int i, T c) {
+        Matrix<T> m = identity(size);
+        m.data.at(i).at(i) = c;
+        return m;
+    }
+    template<typename T>
+    Matrix<T> Matrix<T>::elementary(int size, int i, int j, T c) {
+        Matrix<T> m = identity(size);
+        m.data.at(i).at(j) = c;
+        return m;
+    }
+    template<typename T>
+    Matrix<T> Matrix<T>::elementary_switch(int size, int i, int j) {
+        Matrix<T> p = identity(size);
+        p.data.at(i).at(i) = 0;
+        p.data.at(j).at(j) = 0;
+        p.data.at(i).at(j) = 1;
+        p.data.at(j).at(i) = 1;
+        return p;
     }
 
     /*daclaration of functions*/
