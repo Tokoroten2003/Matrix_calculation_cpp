@@ -1,2 +1,2 @@
-# linear_algebra_cpp
-Experimental linear algebra implementation in C++
+# Matrix calculation in c++
+Experimental matrix-calculation implementation in C++
