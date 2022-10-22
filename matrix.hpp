@@ -24,6 +24,8 @@ namespace m_calc {
             Matrix &operator*=(const T c);
             Matrix &operator*=(const Matrix &m);
 
+            inline const Mat get_data() const;
+            inline const T get_element(int i, int j) const;
             inline const size_t row_num() const;
             inline const size_t column_num() const;
             inline const bool is_square() const;
@@ -125,6 +127,12 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const Mat
     return *this;
 }
 
+template <typename T> inline const m_calc::Matrix<T>::Mat m_calc::Matrix<T>::get_data() const {
+    return data;
+}
+template <typename T> inline const T m_calc::Matrix<T>::get_element(int i, int j) const {
+    return data.at(i).at(j);
+}
 template <typename T> inline const size_t m_calc::Matrix<T>::row_num() const {
     return data.size();
 }
