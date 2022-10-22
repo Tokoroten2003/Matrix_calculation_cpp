@@ -5,19 +5,18 @@
 #include<vector>
 
 namespace m_calc {
-    template<typename T>
-    class Matrix {
+    template <typename T> using Mat = typename std::vector<std::vector<T>>;
+    template <typename T> class Matrix {
         public:
             static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-            using Mat = typename std::vector<std::vector<T>>;
 
             /*constrctors*/
-            Matrix(const Mat v);
+            Matrix(const Mat<T> v);
             Matrix(const size_t size);
             Matrix(const size_t row, const size_t col);
 
         private:
-            Mat data;
+            Mat<T> data;
 
         public:
             bool operator==(const Matrix &m) const;
@@ -29,7 +28,7 @@ namespace m_calc {
             Matrix &operator*=(const Matrix &m);
 
             /*member funcions*/
-            inline const Mat get_data() const;                          //return the matrix
+            inline const Mat<T> get_data() const;                       //return the matrix
             inline const T get_component(int i, int j) const;           //return the component of the matrix
             inline const size_t row_num() const;                        //return the number of rows of the matrix
             inline const size_t column_num() const;                     //return the mumber of columns of the matrix
@@ -54,7 +53,7 @@ namespace m_calc {
 }
 
 /*constrctors*/
-template <typename T> m_calc::Matrix<T>::Matrix(Mat v) : data(v) {}
+template <typename T> m_calc::Matrix<T>::Matrix(Mat<T> v) : data(v) {}
 template <typename T> m_calc::Matrix<T>::Matrix(size_t size) : data(size, std::vector<T>(size, 0)) {}
 template <typename T> m_calc::Matrix<T>::Matrix(size_t row, size_t col) : data(row, std::vector<T>(col, 0)) {}
 
@@ -116,7 +115,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const Mat
         std::cerr << "The pair of the matrices are an error!";
         std::abort();
     }
-    Mat data_result(row_num(), std::vector<T>(m.column_num(), 0));
+    Mat<T> data_result(row_num(), std::vector<T>(m.column_num(), 0));
     for (int i = 0; i < row_num(); i++) {
         for (int j = 0; j < m.column_num(); j++) {
             for (int k = 0; k < column_num(); k++) {
@@ -128,7 +127,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const Mat
     return *this;
 }
 
-template <typename T> inline const m_calc::Matrix<T>::Mat m_calc::Matrix<T>::get_data() const {
+template <typename T> inline const m_calc::Mat<T> m_calc::Matrix<T>::get_data() const {
     return data;
 }
 template <typename T> inline const T m_calc::Matrix<T>::get_component(int i, int j) const {
@@ -217,7 +216,7 @@ template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::inverse() const
 }
 template <typename T> const int m_calc::Matrix<T>::rank() const {
 int rank = 0;
-Mat e = echelon().data;
+Mat<T> e = echelon().data;
 for (int i = 0; i < row_num(); i++) {
     for (int j = i; j < column_num(); j++) {
         if (e.at(i).at(j) != 0) {
@@ -229,7 +228,7 @@ for (int i = 0; i < row_num(); i++) {
 return rank;
 }
 template <typename T> const T m_calc::Matrix<T>::determinant() const {
-if (is_square()) {                                              //if the matrix is not square, stop running
+if (!is_square()) {                                              //if the matrix is not square, stop running
     std::cerr << "This is not a square matrix!" << std::endl;
 }
 m_calc::Matrix<T> m_tri = *this;
@@ -257,7 +256,7 @@ for (int i = 0; i < row_num(); i++) {
 return;
 }
 template <typename T> m_calc::Matrix<T> m_calc::Matrix<T>::identity(size_t size) {
-Mat data(size, std::vector<T>(size, 0));    //all components are "0"
+Mat<T> data(size, std::vector<T>(size, 0));    //all components are "0"
 for (int i = 0; i < size; i++) {            //change the diagonal components to "1"
     data.at(i).at(i) = 1;
 }
