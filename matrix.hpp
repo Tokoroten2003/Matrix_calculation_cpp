@@ -85,7 +85,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator+=(const Mat
     }
     for (int i = 0; i < row_num(); i++) {                                   //add all every component to each component corresponding
         for (int j = 0; j < column_num(); j++) {
-            data.at(i).at(j) -= m.data.at(i).at(j);
+            data.at(i).at(j) += m.data.at(i).at(j);
         }
     }
     return *this;
