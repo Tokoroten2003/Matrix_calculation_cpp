@@ -234,9 +234,18 @@ if (!is_square()) {                                              //if the matrix
 m_calc::Matrix<T> m_tri = *this;
 T det;
 for (int i = 0; i < row_num(); i++) {                           //make an upper triangular matrix
-    for (int j = i + 1; j < column_num(); j++) {
-        T c = m_tri.data.at(j).at(i) / m_tri.data.at(i).at(i);
-        m_tri = elementary(row_num(), j, i, (-1 * c)) * m_tri;
+    if (m_tri.data.at(i).at(i) == 0) {
+        for (int k = i + 1; k < row_num(); k++) {
+            if (m_tri.data.at(k).at(i) != 0) {
+                m_tri = elementary_swap(row_num(), i, k) * m_tri;
+                break;
+            }
+            if (k == row_num() - 1) {return 0;}
+        }
+    }
+    for (int k = i + 1; k < row_num(); k++) {
+        T c = m_tri.data.at(k).at(i) / m_tri.data.at(i).at(i);
+        m_tri = elementary(row_num(), k, i, (-1 * c)) * m_tri;
     }
 }
 det = m_tri.data.at(0).at(0);
