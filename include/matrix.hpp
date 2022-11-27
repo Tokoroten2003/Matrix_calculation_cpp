@@ -4,7 +4,7 @@
 #include<type_traits>
 #include<vector>
 
-namespace m_calc {
+namespace Mcalc {
     template <typename T> using Mat = typename std::vector<std::vector<T>>;
     template <typename T> class Matrix {
         public:
@@ -53,12 +53,12 @@ namespace m_calc {
 }
 
 /*constrctors*/
-template <typename T> m_calc::Matrix<T>::Matrix(Mat<T> v) : data(v) {}
-template <typename T> m_calc::Matrix<T>::Matrix(size_t size) : data(size, std::vector<T>(size, 0)) {}
-template <typename T> m_calc::Matrix<T>::Matrix(size_t row, size_t col) : data(row, std::vector<T>(col, 0)) {}
+template <typename T> Mcalc::Matrix<T>::Matrix(Mat<T> v) : data(v) {}
+template <typename T> Mcalc::Matrix<T>::Matrix(size_t size) : data(size, std::vector<T>(size, 0)) {}
+template <typename T> Mcalc::Matrix<T>::Matrix(size_t row, size_t col) : data(row, std::vector<T>(col, 0)) {}
 
 /*definition of member functions*/
-template <typename T> bool m_calc::Matrix<T>::operator==(const Matrix &m) const {
+template <typename T> bool Mcalc::Matrix<T>::operator==(const Matrix &m) const {
     if (row_num() != m.row_num() || column_num() != m.column_num()) {       //if the type of matrices are different, return false
         return false;
     }
@@ -71,14 +71,14 @@ template <typename T> bool m_calc::Matrix<T>::operator==(const Matrix &m) const 
     }
     return true;
 }
-template <typename T> inline bool m_calc::Matrix<T>::operator!=(const Matrix &m) const {
+template <typename T> inline bool Mcalc::Matrix<T>::operator!=(const Matrix &m) const {
     return !(*this == m);
 }
-template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator=(const Matrix &m) {
+template <typename T> Mcalc::Matrix<T> &Mcalc::Matrix<T>::operator=(const Matrix &m) {
     data = m.data;
     return *this;
 }
-template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator+=(const Matrix &m) {
+template <typename T> Mcalc::Matrix<T> &Mcalc::Matrix<T>::operator+=(const Matrix &m) {
     if (row_num() != m.row_num() && column_num() != m.column_num()) {       //if the type of matrices are different, stop running
         std::cerr << "The pair of the matrices are an error!";
         std::abort();
@@ -90,7 +90,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator+=(const Mat
     }
     return *this;
 }
-template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator-=(const Matrix &m) {
+template <typename T> Mcalc::Matrix<T> &Mcalc::Matrix<T>::operator-=(const Matrix &m) {
     if (row_num() != m.row_num() && column_num() != m.column_num()) {       //if the type of matrices are different, stop running
         std::cerr << "The pair of the matrices are an error !";
         std::abort();
@@ -102,7 +102,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator-=(const Mat
     }
     return *this;
 }
-template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const T c) {
+template <typename T> Mcalc::Matrix<T> &Mcalc::Matrix<T>::operator*=(const T c) {
     for (int i = 0; i < row_num(); i++) {           //multiply every component by c
         for (int j = 0; j < column_num(); j++) {
             data.at(i).at(j) *= c;
@@ -110,7 +110,7 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const T c
     }
     return *this;
     }
-template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const Matrix &m) {
+template <typename T> Mcalc::Matrix<T> &Mcalc::Matrix<T>::operator*=(const Matrix &m) {
     if (column_num() != m.row_num()) {                          //if the type of matrices is not appropreate, stop running
         std::cerr << "The pair of the matrices are an error!";
         std::abort();
@@ -127,23 +127,23 @@ template <typename T> m_calc::Matrix<T> &m_calc::Matrix<T>::operator*=(const Mat
     return *this;
 }
 
-template <typename T> inline const m_calc::Mat<T> m_calc::Matrix<T>::get_data() const {
+template <typename T> inline const Mcalc::Mat<T> Mcalc::Matrix<T>::get_data() const {
     return data;
 }
-template <typename T> inline const T m_calc::Matrix<T>::get_component(int i, int j) const {
+template <typename T> inline const T Mcalc::Matrix<T>::get_component(int i, int j) const {
     return data.at(i).at(j);
 }
-template <typename T> inline const size_t m_calc::Matrix<T>::row_num() const {
+template <typename T> inline const size_t Mcalc::Matrix<T>::row_num() const {
     return data.size();
 }
-template <typename T> inline const size_t m_calc::Matrix<T>::column_num() const {
+template <typename T> inline const size_t Mcalc::Matrix<T>::column_num() const {
     return data.at(0).size();
 }
-template <typename T> inline const bool m_calc::Matrix<T>::is_square() const {
+template <typename T> inline const bool Mcalc::Matrix<T>::is_square() const {
     return row_num() == column_num();
 }
-template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::transpose() const {
-m_calc::Matrix<T> m_result(column_num(), row_num());        //make a matrix whose column size and row size is swaped
+template <typename T> const Mcalc::Matrix<T> Mcalc::Matrix<T>::transpose() const {
+Mcalc::Matrix<T> m_result(column_num(), row_num());        //make a matrix whose column size and row size is swaped
 for (int i = 0; i < row_num(); i++) {
     for (int j = 0; j < column_num(); j++) {                //swap the component of column and row
         m_result.data.at(j).at(i) = data.at(i).at(j);
@@ -151,7 +151,7 @@ for (int i = 0; i < row_num(); i++) {
 }
 return m_result;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::echelon() const {
+template <typename T> const Mcalc::Matrix<T> Mcalc::Matrix<T>::echelon() const {
     Matrix<T> m_result = *this;
     bool skip = false;
     for (int i = 0; i < row_num(); i++) {
@@ -179,7 +179,7 @@ template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::echelon() const
     }
     return m_result;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::inverse() const {
+template <typename T> const Mcalc::Matrix<T> Mcalc::Matrix<T>::inverse() const {
     Matrix<T> m_result = identity(row_num());
     Matrix<T> m_echelon = *this;
     if (!is_square()) {     //if the matrix is not square, stop running
@@ -214,7 +214,7 @@ template <typename T> const m_calc::Matrix<T> m_calc::Matrix<T>::inverse() const
     }
     return m_result;
 }
-template <typename T> const int m_calc::Matrix<T>::rank() const {
+template <typename T> const int Mcalc::Matrix<T>::rank() const {
 int rank = 0;
 Mat<T> e = echelon().data;
 for (int i = 0; i < row_num(); i++) {
@@ -227,11 +227,11 @@ for (int i = 0; i < row_num(); i++) {
 }
 return rank;
 }
-template <typename T> const T m_calc::Matrix<T>::determinant() const {
+template <typename T> const T Mcalc::Matrix<T>::determinant() const {
 if (!is_square()) {                                              //if the matrix is not square, stop running
     std::cerr << "This is not a square matrix!" << std::endl;
 }
-m_calc::Matrix<T> m_tri = *this;
+Mcalc::Matrix<T> m_tri = *this;
 T det;
 for (int i = 0; i < row_num(); i++) {                           //make an upper triangular matrix
     if (m_tri.data.at(i).at(i) == 0) {
@@ -254,7 +254,7 @@ for (int i = 1; i < row_num(); i++) {                           //multiple all t
 }
 return det;
 }
-template <typename T> void m_calc::Matrix<T>::print() const {
+template <typename T> void Mcalc::Matrix<T>::print() const {
 for (int i = 0; i < row_num(); i++) {
     std::cout << data.at(i).at(0);
     for (int j = 1; j < column_num(); j++) {
@@ -264,26 +264,26 @@ for (int i = 0; i < row_num(); i++) {
 }
 return;
 }
-template <typename T> m_calc::Matrix<T> m_calc::Matrix<T>::identity(size_t size) {
+template <typename T> Mcalc::Matrix<T> Mcalc::Matrix<T>::identity(size_t size) {
 Mat<T> data(size, std::vector<T>(size, 0));    //all components are "0"
 for (int i = 0; i < size; i++) {            //change the diagonal components to "1"
     data.at(i).at(i) = 1;
 }
-m_calc::Matrix<T> m(data);
+Mcalc::Matrix<T> m(data);
 return m;
 }
-template <typename T> m_calc::Matrix<T> m_calc::Matrix<T>::elementary(size_t size, int i, T c) {
-m_calc::Matrix<T> m = identity(size);
+template <typename T> Mcalc::Matrix<T> Mcalc::Matrix<T>::elementary(size_t size, int i, T c) {
+Mcalc::Matrix<T> m = identity(size);
 m.data.at(i).at(i) = c;
 return m;
 }
-template <typename T> m_calc::Matrix<T> m_calc::Matrix<T>::elementary(size_t size, int i, int j, T c) {
-m_calc::Matrix<T> m = identity(size);
+template <typename T> Mcalc::Matrix<T> Mcalc::Matrix<T>::elementary(size_t size, int i, int j, T c) {
+Mcalc::Matrix<T> m = identity(size);
 m.data.at(i).at(j) = c;
 return m;
 }
-template <typename T> m_calc::Matrix<T> m_calc::Matrix<T>::elementary_swap(size_t size, int i, int j) {
-m_calc::Matrix<T> p = identity(size);
+template <typename T> Mcalc::Matrix<T> Mcalc::Matrix<T>::elementary_swap(size_t size, int i, int j) {
+Mcalc::Matrix<T> p = identity(size);
 p.data.at(i).at(i) = 0;
 p.data.at(j).at(j) = 0;
 p.data.at(i).at(j) = 1;
@@ -292,28 +292,28 @@ return p;
 }
 
 /*definition of functions*/
-template <typename T> const m_calc::Matrix<T> m_calc::operator+(const Matrix<T> &m1, const Matrix<T> &m2) {
+template <typename T> const Mcalc::Matrix<T> Mcalc::operator+(const Matrix<T> &m1, const Matrix<T> &m2) {
     static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-    m_calc::Matrix<T> m_result(m1);
+    Mcalc::Matrix<T> m_result(m1);
     return m_result += m2;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::operator-(const Matrix<T> &m1, const Matrix<T> &m2) {
+template <typename T> const Mcalc::Matrix<T> Mcalc::operator-(const Matrix<T> &m1, const Matrix<T> &m2) {
     static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-    m_calc::Matrix<T> m_result(m1);
+    Mcalc::Matrix<T> m_result(m1);
     return m_result -= m2;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::operator*(const Matrix<T> &m, const T c) {
+template <typename T> const Mcalc::Matrix<T> Mcalc::operator*(const Matrix<T> &m, const T c) {
     static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-    m_calc::Matrix<T> m_result(m);
+    Mcalc::Matrix<T> m_result(m);
     return m_result *= c;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::operator*(const T c, const Matrix<T> &m) {
+template <typename T> const Mcalc::Matrix<T> Mcalc::operator*(const T c, const Matrix<T> &m) {
     static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-    m_calc::Matrix<T> m_result(m);
+    Mcalc::Matrix<T> m_result(m);
     return m_result *= c;
 }
-template <typename T> const m_calc::Matrix<T> m_calc::operator*(const Matrix<T> &m1, const Matrix<T> &m2) {
+template <typename T> const Mcalc::Matrix<T> Mcalc::operator*(const Matrix<T> &m1, const Matrix<T> &m2) {
     static_assert(std::is_arithmetic<T>::value, "type T must be arithmetic!");
-    m_calc::Matrix<T> m_result(m1);
+    Mcalc::Matrix<T> m_result(m1);
     return m_result *= m2;
 }
